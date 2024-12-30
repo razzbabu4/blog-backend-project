@@ -7,6 +7,8 @@ const userSchema = new Schema<TUser>({
     password: { type: String, required: true },
     role: { type: String, enum: ["admin", "user"], default: "user" },
     isBlocked: { type: Boolean, default: false }
+}, {
+    timestamps: true
 })
 
 export const User = model<TUser>('user', userSchema)
