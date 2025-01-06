@@ -6,7 +6,7 @@ const app: Application = express();
 
 // parser
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 // routes
 app.use('/api', router)
@@ -17,4 +17,5 @@ app.get('/', (req, res) => {
 
 // global error handler
 app.use(globalErrorHandler)
+
 export default app;
