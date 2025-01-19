@@ -7,3 +7,8 @@ export type TUser = {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export type TLoginUser = {
+    email: string;
+    password: string;
+}

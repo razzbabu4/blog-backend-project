@@ -5,9 +5,8 @@ import { ErrorRequestHandler } from 'express';
 
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
-    const statusCode = error.statusCode || 500; // get error.statusCode from AppError class
+    const statusCode = error.statusCode || 500;
     const message = error.message || 'Something went wrong';
-
 
     // ultimate return
     res.status(statusCode).json({
