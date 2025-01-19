@@ -1,7 +1,7 @@
 import config from "../../config";
 import { TLoginUser, TUser } from "../User/user.interface";
 import { User } from "../User/user.model";
-import jwt from "jsonwebtoken";
+import { createToken } from "./auth.utils";
 
 const userRegisterIntoDB = async (payload: TUser) => {
     const result = await User.create(payload);
@@ -33,10 +33,12 @@ const userLogin = async (payload: TLoginUser) => {
         role: user.role,
     };
 
-    const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn: config.jwt_access_secret_expireIn })
+    const accessToken = createToken(jwtPayload, config.jwt_access_secret as string, config.jwt_access_secret_expireIn as string)
+    const refreshToken = createToken(jwtPayload, config.jwt_refresh_secret as string, config.jwt_refresh_secret_expireIn as string);
 
     return {
-        accessToken
+        accessToken,
+        refreshToken
     }
 
 }
