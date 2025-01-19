@@ -1,8 +1,7 @@
+import config from "../../config";
 import { TLoginUser, TUser } from "../User/user.interface";
 import { User } from "../User/user.model";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-
 
 const userRegisterIntoDB = async (payload: TUser) => {
     const result = await User.create(payload);
@@ -10,16 +9,22 @@ const userRegisterIntoDB = async (payload: TUser) => {
 }
 
 const userLogin = async (payload: TLoginUser) => {
-    const { email } = payload;
-    const user = await User.findOne({ email });
+    const user = await User.isUserExistCheckByEmail(payload.email)
     if (!user) {
         throw new Error('This user is not exist');
     }
 
-    const isPasswordMatch = await bcrypt.compare(payload.password, user.password);
+    const isPasswordMatch = await User.isPasswordMatched(payload.password, user.password)
 
     if (!isPasswordMatch) {
         throw new Error('Wrong password');
+    }
+
+    // check if user is blocked
+    const isUserBlocked = user.isBlocked === true;
+
+    if (isUserBlocked) {
+        throw new Error('User is marked as blocked');
     }
 
     // create token and send to the client
@@ -28,7 +33,7 @@ const userLogin = async (payload: TLoginUser) => {
         role: user.role,
     };
 
-    const accessToken = jwt.sign(jwtPayload, "ffffffff", { expiresIn: "1h" })
+    const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn: config.jwt_access_secret_expireIn })
 
     return {
         accessToken
