@@ -6,7 +6,7 @@ import config from "../../config";
 const userSchema = new Schema<TUser, UserModel>({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: 0 },
     role: { type: String, enum: ["admin", "user"], default: "user" },
     isBlocked: { type: Boolean, default: false }
 }, {
@@ -33,4 +33,4 @@ userSchema.statics.isPasswordMatched = async function (plaintextPassword: string
 }
 
 
-export const User = model<TUser, UserModel>('user', userSchema)
+export const User = model<TUser, UserModel>('User', userSchema)
