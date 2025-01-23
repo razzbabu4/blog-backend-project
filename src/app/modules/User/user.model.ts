@@ -24,7 +24,7 @@ userSchema.pre('save', async function (next) {
 
 // check user existence by email
 userSchema.statics.isUserExistCheckByEmail = async function (email: string) {
-    return await User.findOne({ email })
+    return await User.findOne({ email }).select("+password")
 }
 
 // check password 

@@ -7,6 +7,6 @@ import { BlogValidationSchema } from "./blog.validation";
 const router = Router();
 
 router.post('/create-blog', auth(), validateRequest(BlogValidationSchema.createBlogValidationSchema), BlogController.createBlog);
-router.patch('/:id', auth(), BlogController.updateBlog);
+router.patch('/:id', auth(), validateRequest(BlogValidationSchema.updateBlogPartialValidationSchema), BlogController.updateBlog);
 
 export const BlogRouter = router;

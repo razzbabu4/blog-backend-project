@@ -13,24 +13,17 @@ const createBlogIntoDB = async (payload: TBlog, userEmail: string) => {
     payload.author = user._id;
 
     // create blog
-    const result = await Blog.create(payload);
+    const newBlog = await Blog.create(payload);
 
     // Populate the author field with user details
-    const populatedBlog = await Blog.findById(result._id)
-        .select("title content")
-        .populate("author", "name email");
-
-    if (!populatedBlog) {
-        throw new Error("Failed to create blog. Please try again.");
-    }
-
+    const populatedBlog = await Blog.isBlogExistCheckById(newBlog._id.toString());
     return populatedBlog;
 }
 
 const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>, userEmail: string) => {
     // check if blog exist or not!
-    const blog = await Blog.findById(id);
-    if (!blog) {
+    const existedBlog = await Blog.isBlogExistCheckById(id)
+    if (!existedBlog) {
         throw new Error("Blog not found. Unable to update blog.");
     }
 
@@ -41,13 +34,13 @@ const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>, userEmail: 
     }
 
     // check owner of the blog
-    if (blog.author.toString() !== user._id.toString()) {
+    if (existedBlog?.author?.email !== userEmail) {
         throw new Error("Unauthorized access");
     }
-    const result = await Blog.findByIdAndUpdate(id, payload, { new: true })
-        .select("title content")
-        .populate("author", "name email");
-    return result;
+
+    // update the blog
+    const updatedBlog = await Blog.findByIdAndUpdate(id, payload, { new: true })
+    return updatedBlog;
 }
 
 export const BlogServices = {
