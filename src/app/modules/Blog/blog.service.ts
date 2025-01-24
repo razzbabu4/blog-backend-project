@@ -30,7 +30,7 @@ const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>, userEmail: 
     // check if user exist or not!
     const user = await User.isUserExistCheckByEmail(userEmail);
     if (!user) {
-        throw new Error("User not found. Unable to create blog.");
+        throw new Error("User not found. Unable to update blog.");
     }
 
     // check owner of the blog
@@ -43,6 +43,28 @@ const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>, userEmail: 
     return updatedBlog;
 }
 
+const deleteBlog = async (id: string, userEmail: string) => {
+    // check if blog exist or not!
+    const existedBlog = await Blog.isBlogExistCheckById(id)
+    if (!existedBlog) {
+        throw new Error("Blog not found. Unable to delete blog.");
+    }
+
+    // check if user exist or not!
+    const user = await User.isUserExistCheckByEmail(userEmail);
+    if (!user) {
+        throw new Error("User not found. Unable to delete blog.");
+    }
+
+    // check owner of the blog
+    if (existedBlog?.author?.email !== userEmail) {
+        throw new Error("Unauthorized access");
+    }
+
+    const deletedBlog = await Blog.findByIdAndDelete(id);
+    return deletedBlog;
+}
+
 export const BlogServices = {
-    createBlogIntoDB, updateBlogIntoDB
+    createBlogIntoDB, updateBlogIntoDB, deleteBlog
 }

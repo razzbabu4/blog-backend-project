@@ -16,7 +16,7 @@ const createBlogValidationSchema = z.object({
     isPublished: z.boolean().optional().default(true)
 })
 
-// For validating partial payloads (e.g., updates)
+// For validating partial payloads (for updates)
 const updateBlogPartialValidationSchema = createBlogValidationSchema.partial();
 
 export const BlogValidationSchema = {
