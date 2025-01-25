@@ -65,6 +65,37 @@ const deleteBlog = async (id: string, userEmail: string) => {
     return deletedBlog;
 }
 
+const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
+    const blogSearchableField = ["title", "content"];
+    let search = "";
+    if (query?.search) {
+        search = query?.search as string;
+    }
+
+    const searchQuery = Blog.find({
+        $or: blogSearchableField.map((field) => {
+            return {
+                [field]: { $regex: search, $options: 'i' }
+            }
+        })
+    });
+
+    const filter = query?.filter as string;
+    const filterCondition = filter ? { author: filter } : {}
+
+    const filterQuery = searchQuery.find(filterCondition);
+
+    const sortBy = (query?.sortBy as string) || "createdAt"
+
+    const sortOrder = query?.sortOrder === "asc" ? 1 : -1;
+
+    const sortQuery = filterQuery.sort({ [sortBy]: sortOrder });
+
+    return sortQuery;
+}
+
+
+
 export const BlogServices = {
-    createBlogIntoDB, updateBlogIntoDB, deleteBlog
+    createBlogIntoDB, updateBlogIntoDB, deleteBlog, getAllBlogsFromDB
 }

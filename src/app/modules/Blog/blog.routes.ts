@@ -9,5 +9,6 @@ const router = Router();
 router.post('/create-blog', auth(), validateRequest(BlogValidationSchema.createBlogValidationSchema), BlogController.createBlog);
 router.patch('/:id', auth(), validateRequest(BlogValidationSchema.updateBlogPartialValidationSchema), BlogController.updateBlog);
 router.delete('/:id', auth(), BlogController.deleteBlog);
+router.get('/', BlogController.getAllBlogs);
 
 export const BlogRouter = router;

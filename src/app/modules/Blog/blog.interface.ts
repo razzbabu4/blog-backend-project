@@ -20,5 +20,5 @@ export interface PopulatedBlog {
 }
 
 export interface BlogModel extends Model<TBlog> {
-    isBlogExistCheckById(id: string): Promise<PopulatedBlog>
+    isBlogExistCheckById(id: string): Promise<PopulatedBlog | null>
 }
