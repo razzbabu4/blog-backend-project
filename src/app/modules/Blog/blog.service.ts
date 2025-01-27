@@ -1,6 +1,7 @@
 import { TBlog } from "./blog.interface";
 import { Blog } from "./blog.model";
 import { User } from "../User/user.model";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createBlogIntoDB = async (payload: TBlog, userEmail: string) => {
     // check if blog exist or not!
@@ -67,31 +68,14 @@ const deleteBlog = async (id: string, userEmail: string) => {
 
 const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
     const blogSearchableField = ["title", "content"];
-    let search = "";
-    if (query?.search) {
-        search = query?.search as string;
-    }
 
-    const searchQuery = Blog.find({
-        $or: blogSearchableField.map((field) => {
-            return {
-                [field]: { $regex: search, $options: 'i' }
-            }
-        })
-    });
+    const blogQuery = new QueryBuilder(Blog.find(), query)
+        .search(blogSearchableField)
+        .filter()
+        .sort()
 
-    const filter = query?.filter as string;
-    const filterCondition = filter ? { author: filter } : {}
-
-    const filterQuery = searchQuery.find(filterCondition);
-
-    const sortBy = (query?.sortBy as string) || "createdAt"
-
-    const sortOrder = query?.sortOrder === "asc" ? 1 : -1;
-
-    const sortQuery = filterQuery.sort({ [sortBy]: sortOrder });
-
-    return sortQuery;
+    const blogs = await blogQuery.modelQuery;
+    return blogs;
 }
 
 
