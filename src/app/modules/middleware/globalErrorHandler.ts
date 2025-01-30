@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 import { ErrorRequestHandler } from 'express';
+import config from '../../config';
 
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
@@ -12,7 +13,8 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     res.status(statusCode).json({
         success: false,
         message: message,
-        error
+        error: error,
+        stack: config.NODE_ENV === "development" ? error?.stack : null
     });
 };
 

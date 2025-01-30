@@ -2,12 +2,14 @@ import { TBlog } from "./blog.interface";
 import { Blog } from "./blog.model";
 import { User } from "../User/user.model";
 import QueryBuilder from "../../builder/QueryBuilder";
+import ApiError from "../../errors/ApiError";
+import { StatusCodes } from "http-status-codes";
 
 const createBlogIntoDB = async (payload: TBlog, userEmail: string) => {
     // check if blog exist or not!
     const user = await User.isUserExistCheckByEmail(userEmail);
     if (!user) {
-        throw new Error("User not found. Unable to create blog.");
+        throw new ApiError(StatusCodes.NOT_FOUND, "User not found. Unable to create blog.");
     }
 
     // assign login user "_id"
@@ -25,18 +27,18 @@ const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>, userEmail: 
     // check if blog exist or not!
     const existedBlog = await Blog.isBlogExistCheckById(id)
     if (!existedBlog) {
-        throw new Error("Blog not found. Unable to update blog.");
+        throw new ApiError(StatusCodes.NOT_FOUND, "Blog not found. Unable to update blog.");
     }
 
     // check if user exist or not!
     const user = await User.isUserExistCheckByEmail(userEmail);
     if (!user) {
-        throw new Error("User not found. Unable to update blog.");
+        throw new ApiError(StatusCodes.NOT_FOUND, "User not found. Unable to update blog.");
     }
 
     // check owner of the blog
     if (existedBlog?.author?.email !== userEmail) {
-        throw new Error("Unauthorized access");
+        throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized access");
     }
 
     // update the blog
@@ -48,18 +50,18 @@ const deleteBlog = async (id: string, userEmail: string) => {
     // check if blog exist or not!
     const existedBlog = await Blog.isBlogExistCheckById(id)
     if (!existedBlog) {
-        throw new Error("Blog not found. Unable to delete blog.");
+        throw new ApiError(StatusCodes.NOT_FOUND, "Blog not found. Unable to delete blog.");
     }
 
     // check if user exist or not!
     const user = await User.isUserExistCheckByEmail(userEmail);
     if (!user) {
-        throw new Error("User not found. Unable to delete blog.");
+        throw new ApiError(StatusCodes.NOT_FOUND, "User not found. Unable to delete blog.");
     }
 
     // check owner of the blog
     if (existedBlog?.author?.email !== userEmail) {
-        throw new Error("Unauthorized access");
+        throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized access");
     }
 
     const deletedBlog = await Blog.findByIdAndDelete(id);
