@@ -4,7 +4,7 @@ import { AdminService } from "./admin.service";
 import sendResponse from "../../utils/sendResponse";
 
 const blockUser = catchAsync(async (req: Request, res: Response) => {
-    await AdminService.blockUserIntoDB(req.params.userId);
+    await AdminService.blockUserIntoDB(req?.params?.userId);
 
     sendResponse(res, {
         success: true,
@@ -14,7 +14,7 @@ const blockUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteBlog = catchAsync(async (req: Request, res: Response) => {
-    await AdminService.deleteBlogFromDB(req.params.userId);
+    await AdminService.deleteBlogFromDB(req?.params?.id);
     sendResponse(res, {
         success: true,
         message: "Blog deleted successfully",
