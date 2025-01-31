@@ -1,4 +1,4 @@
-# Blog Project: Assignment-3
+# Blog Backend Project
 
 ## Overview
 This project is a backend service for a blogging platform that allows users to create, update, and delete their blogs. The system has two roles: Admin and User. 
@@ -174,11 +174,12 @@ cd blog-backend-project
    npm install
    ```
 
-   - If you prefer yarn
+- If you prefer yarn
 
    ```sh
    yarn install
    ```
+
 #### 3️⃣ Set Up Environment Variables
 Create a `.env` file and add the following:
 ```env
@@ -192,7 +193,7 @@ JWT_SECRET=your_secret_key
    npm run start:dev
    ```
    
-   - For yarn
+ - For yarn
    ```sh
    yarn start:dev
    ```
